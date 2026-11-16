@@ -28,8 +28,6 @@
     background:var(--navy); color:#fff; font-size:16px; font-weight:600; cursor:pointer; }
   button:active { background:#163660; }
   .err { color:#b42318; min-height:20px; margin-top:12px; font-size:14px; }
-  #app { display:none; position:fixed; inset:0; }
-  iframe { width:100%; height:100%; border:0; }
 </style>
 </head>
 <body>
@@ -47,10 +45,6 @@
   </div>
 </div>
 
-<div id="app">
-  <iframe id="frame" title="Protocolo de salida"></iframe>
-</div>
-
 <script>
   const PIN = '2503';
   const APP_URL = 'https://script.google.com/a/macros/svpaulcar.es/s/AKfycbxww7dUgyR_vTWDdNN1AJS_b4rbvw-7sn8ic4-HzWiAVWsxhK-M8KkXLJXuf7HbNtP_/exec';
@@ -59,20 +53,19 @@
   const pin = document.getElementById('pin');
   const err = document.getElementById('err');
 
-  function mostrarApp() {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('frame').src = APP_URL;
+  function abrirApp() {
+    // Navega a la app en esta misma pestaña (sin marco, que Google bloquea)
+    window.location.replace(APP_URL);
   }
 
   // Si ya se desbloqueó en esta sesión del navegador, entra directamente
-  if (sessionStorage.getItem('protocolo_ok') === '1') mostrarApp();
+  if (sessionStorage.getItem('protocolo_ok') === '1') abrirApp();
 
   form.addEventListener('submit', e => {
     e.preventDefault();
     if (pin.value === PIN) {
       sessionStorage.setItem('protocolo_ok', '1');
-      mostrarApp();
+      abrirApp();
     } else {
       err.textContent = 'Código incorrecto';
       pin.value = '';
