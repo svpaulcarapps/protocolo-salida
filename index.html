@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Protocolo salida">
+<meta name="theme-color" content="#1c4272">
+<title>Protocolo de salida</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+  :root { --navy:#1c4272; --gold:#eaa62c; --bg:#f5f7fa; --line:#d3dbe6; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:#1f2a37;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  #login { min-height:100%; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .box { background:#fff; border-radius:24px; box-shadow:0 8px 30px rgba(28,66,114,.12);
+    padding:32px 28px; width:100%; max-width:360px; text-align:center; }
+  .box img { width:88px; height:88px; border-radius:20px; margin-bottom:12px; }
+  h1 { font-size:20px; color:var(--navy); margin:0 0 6px; }
+  p { margin:0 0 20px; color:#5b6b7f; font-size:14px; }
+  input { width:100%; font-size:28px; letter-spacing:.5em; text-align:center; padding:12px;
+    border:2px solid var(--line); border-radius:14px; outline:none; }
+  input:focus { border-color:var(--navy); }
+  button { margin-top:16px; width:100%; padding:14px; border:0; border-radius:14px;
+    background:var(--navy); color:#fff; font-size:16px; font-weight:600; cursor:pointer; }
+  button:active { background:#163660; }
+  .err { color:#b42318; min-height:20px; margin-top:12px; font-size:14px; }
+  #app { display:none; position:fixed; inset:0; }
+  iframe { width:100%; height:100%; border:0; }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="box">
+    <img src="icon-192.png" alt="Logo del colegio">
+    <h1>Protocolo de salida</h1>
+    <p>Introduce el código de acceso</p>
+    <form id="form">
+      <input id="pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off">
+      <button type="submit">Entrar</button>
+      <div class="err" id="err"></div>
+    </form>
+  </div>
+</div>
+
+<div id="app">
+  <iframe id="frame" title="Protocolo de salida"></iframe>
+</div>
+
+<script>
+  const PIN = '2503';
+  const APP_URL = 'https://script.google.com/a/macros/svpaulcar.es/s/AKfycbxww7dUgyR_vTWDdNN1AJS_b4rbvw-7sn8ic4-HzWiAVWsxhK-M8KkXLJXuf7HbNtP_/exec';
+
+  const form = document.getElementById('form');
+  const pin = document.getElementById('pin');
+  const err = document.getElementById('err');
+
+  function mostrarApp() {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('frame').src = APP_URL;
+  }
+
+  // Si ya se desbloqueó en esta sesión del navegador, entra directamente
+  if (sessionStorage.getItem('protocolo_ok') === '1') mostrarApp();
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (pin.value === PIN) {
+      sessionStorage.setItem('protocolo_ok', '1');
+      mostrarApp();
+    } else {
+      err.textContent = 'Código incorrecto';
+      pin.value = '';
+      pin.focus();
+    }
+  });
+</script>
+</body>
+</html>
